@@ -1,52 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motor de Reportes Asíncronos</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motor de Reportes Asíncronos</title>
 </head>
 <body>
-
-    <h1>Motor de Reportes Asíncronos</h1>
-
-    <section class="panel">
-        <h2>Generar nuevo reporte</h2>
-        <form id="formulario-reporte">
-            <label>
-                Tipo de reporte
-                <select id="tipo" required>
-                    <option value="pdf">PDF</option>
-                    <option value="excel">Excel</option>
-                </select>
-            </label>
-
-            <label>
-                Título
-                <input type="text" id="titulo" placeholder="Reporte de ventas" required>
-            </label>
-
-            <label>
-                Cantidad de filas (simula un reporte denso)
-                <input type="number" id="filas" value="500" min="1" max="20000" required>
-            </label>
-
-            <button type="submit">Generar reporte</button>
-        </form>
-    </section>
-
-    <section class="panel">
-        <h2>Estado del reporte</h2>
-        <div id="estado-reporte" class="estado">
-            Aún no has generado ningún reporte.
-        </div>
-    </section>
-
-    <section class="panel">
-        <h2>Recursos del servidor</h2>
-        <div id="recursos-servidor" class="estado">Cargando...</div>
-    </section>
-
-    <script src="script.js"></script>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>

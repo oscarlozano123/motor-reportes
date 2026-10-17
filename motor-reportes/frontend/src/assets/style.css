@@ -1,0 +1,55 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f2f3f8;
+  color: #1a1a2e;
+}
+
+.encabezado { text-align: center; padding: 24px 16px 8px; }
+.encabezado h1 { margin: 0 0 12px; }
+
+.menu { display: flex; justify-content: center; gap: 12px; }
+.menu a {
+  text-decoration: none;
+  color: #4c3f99;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+.menu a.router-link-exact-active { background: #4c3f99; color: #fff; }
+
+.contenido { max-width: 680px; margin: 0 auto; padding: 16px; }
+
+.panel {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.panel h2 { margin-top: 0; color: #4c3f99; font-size: 20px; }
+
+form { display: flex; flex-direction: column; gap: 14px; }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: bold; font-size: 14px; }
+select, input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+button {
+  background: #4c3f99;
+  color: #fff;
+  border: 0;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.6; cursor: wait; }
+
+.estado { line-height: 1.6; }
+.error { color: #b3261e; }
+.nota { color: #555; font-size: 14px; }

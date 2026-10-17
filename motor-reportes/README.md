@@ -8,7 +8,7 @@ enlaces temporales firmados para descarga, y recolección de basura automática.
 ```
 motor-reportes/
 ├── backend/   ← API + worker (estructurado: config/controllers/models/routes/services)
-└── frontend/  ← HTML/CSS/JS plano, consume la API
+└── frontend/  ← Vue 3 + Vite (views, components, layouts, router, services, store), consume la API
 ```
 
 ## 1. Base de datos (PostgreSQL + DBeaver)
@@ -46,11 +46,22 @@ npm run worker
 La API queda en `http://localhost:4000`, y la documentación Swagger en
 `http://localhost:4000/api/docs`.
 
-## 3. Frontend
+## 3. Frontend (Vue 3 + Vite)
 
-Abre la carpeta `frontend/` con **Live Server** en VS Code (clic derecho sobre
-`index.html` → "Open with Live Server"). Asegúrate de que el backend (API + worker)
-ya esté corriendo.
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Abre `http://localhost:5173`. Asegúrate de que el backend (API + worker) ya esté corriendo.
+Si tu API usa otro puerto, copia `.env.example` a `.env` y cambia `VITE_API_URL`.
+
+Estructura de `frontend/src/`:
+- `views/` pantallas (Generar reporte, Recursos)
+- `components/` piezas reutilizables (formulario, estado, panel de recursos)
+- `layouts/` estructura común (encabezado + contenido)
+- `router/`, `services/` (axios), `store/` (Pinia)
 
 ## 4. Flujo de uso
 
