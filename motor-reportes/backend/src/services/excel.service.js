@@ -1,11 +1,13 @@
 const ExcelJS = require('exceljs');
 const path = require('path');
+const { TAMANO_LOTE, cederTurno } = require('./progreso.helper');
 
 const CARPETA_STORAGE = path.join(__dirname, '..', '..', 'storage');
 
 // Genera un Excel "denso" (muchas filas) a partir del payload del job.
 // payload esperado: { titulo: string, filas: number, columnas: string[] }
-async function generarExcel(jobId, payload) {
+// onProgreso(pct) se llama a medida que avanza (0-99); el 100 lo marca el worker al terminar.
+async function generarExcel(jobId, payload, onProgreso = () => {}) {
     const nombreArchivo = `reporte-${jobId}.xlsx`;
     const rutaCompleta = path.join(CARPETA_STORAGE, nombreArchivo);
 
@@ -26,6 +28,11 @@ async function generarExcel(jobId, payload) {
         const fila = {};
         columnas.forEach((c) => { fila[c] = `${c}-${i}`; });
         hoja.addRow(fila);
+
+        if (i % TAMANO_LOTE === 0 && i < filas) {
+            onProgreso(Math.min(99, Math.round((i / filas) * 100)));
+            await cederTurno();
+        }
     }
 
     await workbook.xlsx.writeFile(rutaCompleta);

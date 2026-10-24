@@ -27,6 +27,20 @@ router.post('/', controller.crearReporte);
 
 /**
  * @openapi
+ * /api/reportes:
+ *   get:
+ *     summary: Historial de reportes (los más recientes primero)
+ *     parameters:
+ *       - in: query
+ *         name: limite
+ *         schema: { type: integer, default: 50, maximum: 200 }
+ *     responses:
+ *       200: { description: Lista de reportes con estado, progreso e intentos }
+ */
+router.get('/', controller.listarReportes);
+
+/**
+ * @openapi
  * /api/reportes/{id}:
  *   get:
  *     summary: Consulta el estado de un reporte encolado

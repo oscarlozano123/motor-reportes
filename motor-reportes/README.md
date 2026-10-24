@@ -89,3 +89,26 @@ git push -u origin main
 
 > `.env` y `backend/storage/*` están en `.gitignore` a propósito — nunca se suben
 > las credenciales reales ni los archivos generados.
+
+## 5. Funciones adicionales
+
+- **Monitoreo real de CPU/RAM** (también en Windows): el worker no toma trabajos nuevos
+  si la CPU o la RAM superan `UMBRAL_CPU` / `UMBRAL_RAM`.
+- **Barra de progreso:** el worker guarda el avance (0-100) del reporte en la base de datos.
+- **Reintentos automáticos:** si un reporte falla, vuelve a la cola hasta `MAX_INTENTOS` veces
+  antes de quedar como `failed`.
+- **Historial:** `GET /api/reportes` y la vista "Historial" del frontend.
+- **Limpieza manual:** `POST /api/mantenimiento/limpieza?minutos=N` y el botón en
+  "Recursos y limpieza". La limpieza automática sigue corriendo cada hora.
+
+### Cómo demostrarlo
+
+| Qué mostrar | Cómo |
+|---|---|
+| Barra de progreso | En `backend/.env` pon `RETARDO_LOTE_MS=300`, reinicia el worker y genera un reporte de 5000 filas |
+| Reintentos | Genera un reporte cuyo título contenga la palabra `fallar` y mira la terminal del worker |
+| Control de recursos | Pon `UMBRAL_RAM=1` en `.env` y reinicia el worker: dejará de tomar trabajos |
+| Enlace que expira | Pon `MINUTOS_LINK=1`, descarga un reporte y repite el enlace pasado 1 minuto |
+| Recolección de basura | En "Recursos y limpieza" escribe `0` minutos y pulsa el botón |
+
+Después de actualizar el código ejecuta una vez `npm run migrate` en `backend` (agrega la columna `progreso`).

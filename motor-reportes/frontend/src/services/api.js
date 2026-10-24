@@ -13,8 +13,20 @@ export function consultarReporte(id) {
   return api.get(`/reportes/${id}`).then((r) => r.data)
 }
 
+// Historial: los reportes más recientes primero
+export function listarReportes(limite = 50) {
+  return api.get('/reportes', { params: { limite } }).then((r) => r.data)
+}
+
 export function consultarRecursos() {
   return api.get('/recursos').then((r) => r.data)
+}
+
+// Ejecuta la recolección de basura en el backend. Si se pasa "minutos", borra los
+// reportes terminados hace más de esos minutos; si no, usa la retención del .env.
+export function ejecutarLimpieza(minutos) {
+  const params = minutos === undefined || minutos === '' ? {} : { minutos }
+  return api.post('/mantenimiento/limpieza', null, { params }).then((r) => r.data)
 }
 
 // El backend devuelve la ruta de descarga con el prefijo /api; se arma la URL completa

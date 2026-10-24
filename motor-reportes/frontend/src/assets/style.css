@@ -20,7 +20,7 @@ body {
 }
 .menu a.router-link-exact-active { background: #4c3f99; color: #fff; }
 
-.contenido { max-width: 680px; margin: 0 auto; padding: 16px; }
+.contenido { max-width: 900px; margin: 0 auto; padding: 16px; }
 
 .panel {
   background: #fff;
@@ -53,3 +53,36 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .estado { line-height: 1.6; }
 .error { color: #b3261e; }
 .nota { color: #555; font-size: 14px; }
+
+/* ---- Progreso, medidores e historial ---- */
+.aviso { color: #8a5a00; font-size: 14px; }
+
+.barra, .medidor {
+  background: #e4e4ee;
+  border-radius: 8px;
+  height: 12px;
+  margin: 8px 0 4px;
+  overflow: hidden;
+}
+.barra-relleno { background: #4c3f99; height: 100%; transition: width 0.4s; }
+.medidor-relleno { background: #2e8b57; height: 100%; transition: width 0.4s; }
+.medidor-relleno.alto { background: #b3261e; }
+small { color: #555; display: block; margin-top: 4px; }
+
+.tabla-contenedor { overflow-x: auto; }
+.tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tabla th, .tabla td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eee; }
+.tabla th { color: #4c3f99; }
+
+.insignia {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #e4e4ee;
+}
+.insignia.pending { background: #fff3cd; color: #7a5b00; }
+.insignia.processing { background: #dbe7ff; color: #1b3f8f; }
+.insignia.done { background: #d9f2e3; color: #1d6b3f; }
+.insignia.failed { background: #fbdcd9; color: #8c1d18; }

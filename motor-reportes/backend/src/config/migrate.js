@@ -15,9 +15,15 @@ async function migrar() {
                 ruta_resultado TEXT,
                 error_mensaje TEXT,
                 intentos INT NOT NULL DEFAULT 0,
+                progreso INT NOT NULL DEFAULT 0,
                 creado_en TIMESTAMP NOT NULL DEFAULT now(),
                 actualizado_en TIMESTAMP NOT NULL DEFAULT now()
             );
+        `);
+
+        // Si la tabla ya existía de antes (sin la columna de progreso), la agrega.
+        await pool.query(`
+            ALTER TABLE jobs ADD COLUMN IF NOT EXISTS progreso INT NOT NULL DEFAULT 0;
         `);
 
         await pool.query(`
