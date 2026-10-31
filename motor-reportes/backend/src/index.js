@@ -18,7 +18,10 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 app.use('/api/reportes', reportRoutes);
 app.use('/api/mantenimiento', mantenimientoRoutes);
 app.get('/api/recursos', reportController.consultarRecursos);
+<<<<<<< HEAD
 app.get('/api/recursos/historial', reportController.consultarHistorialRecursos);
+=======
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
 
 app.get('/', (req, res) => {
     res.json({ mensaje: 'Motor de Reportes Asíncronos — API activa' });

@@ -4,3 +4,7 @@ backend/storage/*
 !backend/storage/.gitkeep
 .DS_Store
 dist/
+<<<<<<< HEAD
+=======
+*.code-workspace
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16

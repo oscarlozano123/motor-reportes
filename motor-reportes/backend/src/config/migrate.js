@@ -11,12 +11,19 @@ async function migrar() {
                 titulo VARCHAR(255) NOT NULL,
                 payload JSONB NOT NULL,
                 estado VARCHAR(20) NOT NULL DEFAULT 'pending'
+<<<<<<< HEAD
                     CHECK (estado IN ('pending', 'processing', 'done', 'failed', 'cancelled')),
+=======
+                    CHECK (estado IN ('pending', 'processing', 'done', 'failed')),
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
                 ruta_resultado TEXT,
                 error_mensaje TEXT,
                 intentos INT NOT NULL DEFAULT 0,
                 progreso INT NOT NULL DEFAULT 0,
+<<<<<<< HEAD
                 prioridad INT NOT NULL DEFAULT 1,
+=======
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
                 creado_en TIMESTAMP NOT NULL DEFAULT now(),
                 actualizado_en TIMESTAMP NOT NULL DEFAULT now()
             );
@@ -27,6 +34,7 @@ async function migrar() {
             ALTER TABLE jobs ADD COLUMN IF NOT EXISTS progreso INT NOT NULL DEFAULT 0;
         `);
 
+<<<<<<< HEAD
         // Prioridad del reporte: 0 = baja, 1 = normal, 2 = alta
         await pool.query(`
             ALTER TABLE jobs ADD COLUMN IF NOT EXISTS prioridad INT NOT NULL DEFAULT 1;
@@ -39,6 +47,8 @@ async function migrar() {
             CHECK (estado IN ('pending', 'processing', 'done', 'failed', 'cancelled'));
         `);
 
+=======
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
         await pool.query(`
             CREATE INDEX IF NOT EXISTS idx_jobs_estado ON jobs (estado);
         `);

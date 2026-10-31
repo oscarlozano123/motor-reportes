@@ -36,6 +36,7 @@ function actualizarCpu() {
 // mantenga vivo el proceso por sí solo.
 setInterval(actualizarCpu, 1000).unref();
 
+<<<<<<< HEAD
 // Historial reciente para la gráfica del frontend: una lectura cada 3 segundos,
 // guardando las últimas 60 (≈ 3 minutos). Vive en memoria del proceso del API.
 const MAX_LECTURAS = 60;
@@ -51,6 +52,8 @@ function obtenerHistorialRecursos() {
     return historial;
 }
 
+=======
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
 // Devuelve el estado actual de CPU/RAM del servidor (porcentajes aproximados)
 function obtenerUsoRecursos() {
     const nucleos = os.cpus().length;
@@ -70,12 +73,19 @@ function obtenerUsoRecursos() {
     };
 }
 
+<<<<<<< HEAD
 setInterval(guardarLectura, 3000).unref();
 
+=======
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
 // El worker consulta esto antes de tomar un nuevo job pesado
 function hayRecursosDisponibles() {
     const { cpuPct, ramPct } = obtenerUsoRecursos();
     return cpuPct < UMBRAL_CPU && ramPct < UMBRAL_RAM;
 }
 
+<<<<<<< HEAD
 module.exports = { obtenerUsoRecursos, obtenerHistorialRecursos, hayRecursosDisponibles };
+=======
+module.exports = { obtenerUsoRecursos, hayRecursosDisponibles };
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16

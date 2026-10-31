@@ -4,6 +4,7 @@ import { reactive } from 'vue'
 defineProps({ enviando: Boolean })
 const emit = defineEmits(['enviar'])
 
+<<<<<<< HEAD
 const form = reactive({ tipo: 'pdf', titulo: '', filas: 500, prioridad: 'normal' })
 
 function enviar() {
@@ -13,6 +14,12 @@ function enviar() {
     filas: Number(form.filas),
     prioridad: form.prioridad
   })
+=======
+const form = reactive({ tipo: 'pdf', titulo: '', filas: 500 })
+
+function enviar() {
+  emit('enviar', { tipo: form.tipo, titulo: form.titulo, filas: Number(form.filas) })
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
 }
 </script>
 
@@ -36,6 +43,7 @@ function enviar() {
       <input v-model="form.filas" type="number" min="1" max="20000" required />
     </label>
 
+<<<<<<< HEAD
     <label>
       Prioridad (el worker atiende primero las altas)
       <select v-model="form.prioridad">
@@ -45,6 +53,8 @@ function enviar() {
       </select>
     </label>
 
+=======
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
     <button type="submit" :disabled="enviando">
       {{ enviando ? 'Enviando...' : 'Generar reporte' }}
     </button>

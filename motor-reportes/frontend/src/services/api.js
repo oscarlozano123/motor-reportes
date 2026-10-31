@@ -18,20 +18,26 @@ export function listarReportes(limite = 50) {
   return api.get('/reportes', { params: { limite } }).then((r) => r.data)
 }
 
+<<<<<<< HEAD
 // Cancela un reporte que todavía está pendiente
 export function cancelarReporte(id) {
   return api.post(`/reportes/${id}/cancelar`).then((r) => r.data)
 }
 
+=======
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
 export function consultarRecursos() {
   return api.get('/recursos').then((r) => r.data)
 }
 
+<<<<<<< HEAD
 // Últimas lecturas de CPU/RAM para la gráfica
 export function historialRecursos() {
   return api.get('/recursos/historial').then((r) => r.data)
 }
 
+=======
+>>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
 // Ejecuta la recolección de basura en el backend. Si se pasa "minutos", borra los
 // reportes terminados hace más de esos minutos; si no, usa la retención del .env.
 export function ejecutarLimpieza(minutos) {
