@@ -8,12 +8,16 @@ const { hayRecursosDisponibles, obtenerUsoRecursos } = require('../services/reso
 const { generarPdf } = require('../services/pdf.service');
 const { generarExcel } = require('../services/excel.service');
 
+// Identificador del worker: se puede pasar como argumento (npm run worker -- 2)
+// o con la variable WORKER_ID. Permite correr varios workers y ver cuál procesó cada reporte.
+const WORKER_ID = process.argv[2] || process.env.WORKER_ID || `w${process.pid}`;
+
 const INTERVALO_POLLING_MS = 3000;
 const MAX_INTENTOS = Number(process.env.MAX_INTENTOS || 3);
 let procesando = false;
 
 async function procesarUnJob(job) {
-    console.log(`→ Procesando job #${job.id} (${job.tipo}) "${job.titulo}" [intento ${job.intentos + 1}/${MAX_INTENTOS}]`);
+    console.log(`[worker ${WORKER_ID}] → Procesando job #${job.id} (${job.tipo}) "${job.titulo}" [intento ${job.intentos + 1}/${MAX_INTENTOS}]`);
     try {
         // Gancho de pruebas: un título con la palabra "fallar" provoca un error a propósito,
         // para poder demostrar los reintentos automáticos.
@@ -54,7 +58,7 @@ async function cicloDeTrabajo() {
             return;
         }
 
-        const job = await jobModel.tomarSiguienteJobPendiente();
+        const job = await jobModel.tomarSiguienteJobPendiente(WORKER_ID);
         if (!job) return; // nada pendiente
 
         procesando = true;
@@ -66,5 +70,5 @@ async function cicloDeTrabajo() {
     }
 }
 
-console.log('🚀 Worker de reportes iniciado. Esperando trabajos...');
+console.log(`🚀 Worker "${WORKER_ID}" iniciado. Esperando trabajos...`);
 setInterval(cicloDeTrabajo, INTERVALO_POLLING_MS);

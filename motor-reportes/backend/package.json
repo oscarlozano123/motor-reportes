@@ -5,11 +5,14 @@
   "main": "src/index.js",
   "scripts": {
     "migrate": "node src/config/migrate.js",
+    "seed": "node src/config/seed.js",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "worker": "node src/workers/report.worker.js"
+    "worker": "node src/workers/report.worker.js",
+    "test": "jest --runInBand"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
@@ -22,6 +25,8 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
   }
 }

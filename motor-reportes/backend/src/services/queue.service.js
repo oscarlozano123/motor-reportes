@@ -1,13 +1,8 @@
 const jobModel = require('../models/job.model');
 
-// Encola un nuevo trabajo de generación de reporte
-<<<<<<< HEAD
-async function encolarReporte(tipo, titulo, payload, prioridad = 1) {
-    const job = await jobModel.crearJob(tipo, titulo, payload, prioridad);
-=======
-async function encolarReporte(tipo, titulo, payload) {
-    const job = await jobModel.crearJob(tipo, titulo, payload);
->>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
+// Encola un nuevo trabajo de generación de reporte (a nombre de un usuario)
+async function encolarReporte(tipo, titulo, payload, prioridad = 1, usuarioId = null) {
+    const job = await jobModel.crearJob(tipo, titulo, payload, prioridad, usuarioId);
     return job;
 }
 

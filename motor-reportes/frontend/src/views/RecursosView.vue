@@ -1,9 +1,6 @@
 <script setup>
 import PanelRecursos from '../components/PanelRecursos.vue'
-<<<<<<< HEAD
 import GraficaRecursos from '../components/GraficaRecursos.vue'
-=======
->>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
 import PanelLimpieza from '../components/PanelLimpieza.vue'
 </script>
 
@@ -18,14 +15,11 @@ import PanelLimpieza from '../components/PanelLimpieza.vue'
   </section>
 
   <section class="panel">
-<<<<<<< HEAD
     <h2>Uso de CPU y RAM en vivo</h2>
     <GraficaRecursos />
   </section>
 
   <section class="panel">
-=======
->>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
     <h2>Limpieza de reportes (garbage collection)</h2>
     <p class="nota">
       Cada hora el backend borra automáticamente los reportes viejos y sus archivos.

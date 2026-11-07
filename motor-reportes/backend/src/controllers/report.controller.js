@@ -8,10 +8,31 @@ const { ejecutarLimpieza } = require('../services/cleanup.service');
 const PRIORIDADES = { baja: 0, normal: 1, alta: 2 };
 const NOMBRES_PRIORIDAD = ['baja', 'normal', 'alta'];
 
+const REGEX_FECHA = /^\d{4}-\d{2}-\d{2}$/;
+
+function fechaValida(texto) {
+    if (!REGEX_FECHA.test(texto)) return false;
+    const f = new Date(`${texto}T00:00:00Z`);
+    return !Number.isNaN(f.getTime()) && f.toISOString().slice(0, 10) === texto;
+}
+
+// Valida y limpia los filtros de un reporte de ventas: { desde, hasta, categoria }
+function validarFiltros(origen = {}) {
+    const desde = origen.desde ? String(origen.desde) : undefined;
+    const hasta = origen.hasta ? String(origen.hasta) : undefined;
+    const categoria = origen.categoria ? String(origen.categoria).trim() : undefined;
+
+    if (desde && !fechaValida(desde)) return { error: "'desde' debe ser una fecha AAAA-MM-DD válida" };
+    if (hasta && !fechaValida(hasta)) return { error: "'hasta' debe ser una fecha AAAA-MM-DD válida" };
+    if (desde && hasta && desde > hasta) return { error: "'desde' no puede ser posterior a 'hasta'" };
+
+    return { filtros: { desde, hasta, categoria } };
+}
+
 // POST /api/reportes — encola un nuevo reporte (no lo genera aquí, eso lo hace el worker)
 async function crearReporte(req, res) {
     try {
-        const { tipo, titulo, filas, columnas, prioridad = 'normal' } = req.body;
+        const { tipo, titulo, filas, columnas, prioridad = 'normal', fuente = 'simulado' } = req.body;
 
         if (!tipo || !['pdf', 'excel'].includes(tipo)) {
             return res.status(400).json({ error: "El campo 'tipo' debe ser 'pdf' o 'excel'" });
@@ -24,13 +45,28 @@ async function crearReporte(req, res) {
             return res.status(400).json({ error: "El campo 'prioridad' debe ser 'baja', 'normal' o 'alta'" });
         }
 
-        const payload = { titulo, filas, columnas };
-        const job = await queueService.encolarReporte(tipo, titulo, payload, PRIORIDADES[prioridad]);
+        if (!['simulado', 'ventas'].includes(fuente)) {
+            return res.status(400).json({ error: "El campo 'fuente' debe ser 'simulado' o 'ventas'" });
+        }
+
+        let payload;
+        if (fuente === 'ventas') {
+            const { filtros, error } = validarFiltros(req.body.filtros);
+            if (error) return res.status(400).json({ error });
+            payload = { titulo, fuente, filtros };
+        } else {
+            payload = { titulo, fuente, filas, columnas };
+        }
+
+        const job = await queueService.encolarReporte(
+            tipo, titulo, payload, PRIORIDADES[prioridad], req.usuario.id
+        );
 
         res.status(201).json({
             id: job.id,
             estado: job.estado,
             progreso: job.progreso,
+            prioridad,
             mensaje: 'Reporte encolado. Consulta su estado con GET /api/reportes/:id'
         });
     } catch (error) {
@@ -49,6 +85,9 @@ function armarRespuestaJob(job) {
         progreso: job.progreso,
         intentos: job.intentos,
         prioridad: NOMBRES_PRIORIDAD[job.prioridad] || 'normal',
+        fuente: (job.payload && job.payload.fuente) || 'simulado',
+        filtros: (job.payload && job.payload.filtros) || null,
+        worker: job.worker_id || null,
         creado_en: job.creado_en,
         actualizado_en: job.actualizado_en
     };
@@ -68,7 +107,7 @@ function armarRespuestaJob(job) {
 async function listarReportes(req, res) {
     try {
         const limite = Math.min(Math.max(Number(req.query.limite) || 50, 1), 200);
-        const jobs = await jobModel.listarJobs(limite);
+        const jobs = await jobModel.listarJobs(limite, req.usuario.id);
         res.json(jobs.map(armarRespuestaJob));
     } catch (error) {
         console.error(error);
@@ -79,7 +118,7 @@ async function listarReportes(req, res) {
 // GET /api/reportes/:id — estado actual del job, y link firmado si ya terminó
 async function consultarReporte(req, res) {
     try {
-        const job = await jobModel.obtenerJobPorId(req.params.id);
+        const job = await jobModel.obtenerJobDeUsuario(req.params.id, req.usuario.id);
 
         if (!job) {
             return res.status(404).json({ error: 'Reporte no encontrado' });
@@ -117,14 +156,14 @@ async function descargarReporte(req, res) {
 async function cancelarReporte(req, res) {
     try {
         const id = Number(req.params.id);
-        const cancelado = await jobModel.cancelarJob(id);
+        const cancelado = await jobModel.cancelarJob(id, req.usuario.id);
 
         if (cancelado) {
             return res.json(armarRespuestaJob(cancelado));
         }
 
         // No se pudo cancelar: o no existe, o ya no estaba pendiente
-        const job = await jobModel.obtenerJobPorId(id);
+        const job = await jobModel.obtenerJobDeUsuario(id, req.usuario.id);
         if (!job) {
             return res.status(404).json({ error: 'Reporte no encontrado' });
         }
@@ -147,6 +186,16 @@ function consultarHistorialRecursos(req, res) {
     res.json(obtenerHistorialRecursos());
 }
 
+// GET /api/salud — comprobación rápida: ¿el API y la base de datos responden?
+async function consultarSalud(req, res) {
+    try {
+        await jobModel.comprobarConexion();
+        res.json({ api: 'ok', baseDeDatos: 'ok' });
+    } catch (error) {
+        res.status(503).json({ api: 'ok', baseDeDatos: 'sin conexión' });
+    }
+}
+
 // POST /api/mantenimiento/limpieza?minutos=N — ejecuta la recolección de basura ahora mismo.
 // Sin "minutos" usa la retención configurada en el .env.
 async function ejecutarLimpiezaManual(req, res) {
@@ -167,6 +216,7 @@ async function ejecutarLimpiezaManual(req, res) {
 }
 
 module.exports = {
+    validarFiltros,
     crearReporte,
     listarReportes,
     consultarReporte,
@@ -174,5 +224,6 @@ module.exports = {
     cancelarReporte,
     consultarRecursos,
     consultarHistorialRecursos,
+    consultarSalud,
     ejecutarLimpiezaManual
 };

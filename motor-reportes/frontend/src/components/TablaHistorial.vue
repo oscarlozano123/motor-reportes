@@ -2,10 +2,7 @@
 import { urlDescarga } from '../services/api'
 
 defineProps({ reportes: { type: Array, default: () => [] } })
-<<<<<<< HEAD
 const emit = defineEmits(['cancelar'])
-=======
->>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
 
 function formatearFecha(texto) {
   return new Date(texto).toLocaleString()
@@ -22,43 +19,41 @@ function formatearFecha(texto) {
           <th>#</th>
           <th>Tipo</th>
           <th>Título</th>
-<<<<<<< HEAD
           <th>Prioridad</th>
           <th>Estado</th>
           <th>Intentos</th>
+          <th>Worker</th>
           <th>Creado</th>
           <th>Acción</th>
-=======
-          <th>Estado</th>
-          <th>Intentos</th>
-          <th>Creado</th>
-          <th>Descarga</th>
->>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
         </tr>
       </thead>
       <tbody>
         <tr v-for="r in reportes" :key="r.id">
           <td>{{ r.id }}</td>
           <td>{{ r.tipo.toUpperCase() }}</td>
-          <td>{{ r.titulo }}</td>
-<<<<<<< HEAD
+          <td>
+            {{ r.titulo }}
+            <small v-if="r.fuente === 'ventas'">
+              Ventas<template v-if="r.filtros">
+                <template v-if="r.filtros.desde"> · desde {{ r.filtros.desde }}</template>
+                <template v-if="r.filtros.hasta"> · hasta {{ r.filtros.hasta }}</template>
+                <template v-if="r.filtros.categoria"> · {{ r.filtros.categoria }}</template>
+              </template>
+            </small>
+          </td>
           <td>{{ r.prioridad }}</td>
-=======
->>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
           <td>
             <span class="insignia" :class="r.estado">{{ r.estado }}</span>
             <small v-if="r.estado === 'processing'"> {{ r.progreso }}%</small>
           </td>
           <td>{{ r.intentos }}</td>
+          <td>{{ r.worker || '—' }}</td>
           <td>{{ formatearFecha(r.creado_en) }}</td>
           <td>
             <a v-if="r.descarga" :href="urlDescarga(r.descarga.url)" target="_blank">Descargar</a>
-<<<<<<< HEAD
             <button v-else-if="r.estado === 'pending'" class="boton-chico" @click="emit('cancelar', r.id)">
               Cancelar
             </button>
-=======
->>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
             <span v-else-if="r.error" class="error" :title="r.error">Ver error</span>
             <span v-else>—</span>
           </td>

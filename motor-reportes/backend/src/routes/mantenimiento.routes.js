@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/report.controller');
+const autenticar = require('../middlewares/autenticar');
 
 /**
  * @openapi
  * /api/mantenimiento/limpieza:
  *   post:
  *     summary: Ejecuta la recolección de basura ahora mismo (borra reportes viejos y sus archivos)
+ *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: query
  *         name: minutos
@@ -17,6 +19,6 @@ const controller = require('../controllers/report.controller');
  *       200: { description: Cuántos reportes y archivos se eliminaron }
  *       400: { description: Parámetro inválido }
  */
-router.post('/limpieza', controller.ejecutarLimpiezaManual);
+router.post('/limpieza', autenticar, controller.ejecutarLimpiezaManual);
 
 module.exports = router;

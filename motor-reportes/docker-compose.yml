@@ -1,0 +1,70 @@
+# Levanta todo con un solo comando:  docker compose up --build
+# - db:      PostgreSQL
+# - migrar:  crea/actualiza la tabla jobs y termina
+# - api:     http://localhost:4000  (Swagger en /api/docs)
+# - worker1 y worker2: dos workers en paralelo compartiendo la misma cola
+# Los reportes generados se guardan en el volumen "reportes" (compartido por api y workers).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: clave_docker
+      POSTGRES_DB: reportes_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d reportes_db"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  migrar:
+    build: ./backend
+    command: ["sh", "-c", "node src/config/migrate.js && node src/config/seed.js"]
+    environment: &entorno
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: reportes_db
+      DB_USER: postgres
+      DB_PASSWORD: clave_docker
+      JWT_SECRET: cambia_esto_en_produccion
+      UMBRAL_CPU: 85
+      UMBRAL_RAM: 95
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build: ./backend
+    ports:
+      - "4000:4000"
+    environment: *entorno
+    volumes:
+      - reportes:/app/storage
+    depends_on:
+      migrar:
+        condition: service_completed_successfully
+
+  worker1:
+    build: ./backend
+    command: ["node", "src/workers/report.worker.js", "1"]
+    environment: *entorno
+    volumes:
+      - reportes:/app/storage
+    depends_on:
+      migrar:
+        condition: service_completed_successfully
+
+  worker2:
+    build: ./backend
+    command: ["node", "src/workers/report.worker.js", "2"]
+    environment: *entorno
+    volumes:
+      - reportes:/app/storage
+    depends_on:
+      migrar:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:
+  reportes:

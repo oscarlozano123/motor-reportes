@@ -21,10 +21,11 @@ export const useReportesStore = defineStore('reportes', {
       this.enviando = true
       this.detenerConsulta()
       try {
-        this.job = await crearReporte({
-          ...datos,
-          columnas: ['Columna A', 'Columna B', 'Columna C']
-        })
+        this.job = await crearReporte(
+          datos.fuente === 'simulado'
+            ? { ...datos, columnas: ['Columna A', 'Columna B', 'Columna C'] }
+            : datos
+        )
         this.iniciarConsulta()
       } catch (e) {
         this.job = null

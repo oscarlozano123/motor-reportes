@@ -86,7 +86,6 @@ small { color: #555; display: block; margin-top: 4px; }
 .insignia.processing { background: #dbe7ff; color: #1b3f8f; }
 .insignia.done { background: #d9f2e3; color: #1d6b3f; }
 .insignia.failed { background: #fbdcd9; color: #8c1d18; }
-<<<<<<< HEAD
 
 /* ---- Cancelar y gráfica en vivo ---- */
 .insignia.cancelled { background: #e9e9ef; color: #555; text-decoration: line-through; }
@@ -111,5 +110,14 @@ small { color: #555; display: block; margin-top: 4px; }
 }
 .leyenda-cpu::before { background: #4c3f99; }
 .leyenda-ram::before { background: #2e8b57; }
-=======
->>>>>>> afe6d997551c214bf6f2f550e5fdbf4f4a05cd16
+
+/* --- Sesión y login --- */
+.sesion { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; font-size: 14px; color: #555; }
+.panel-login { max-width: 420px; margin: 24px auto; }
+.cambiar-modo { text-align: center; font-size: 14px; margin-bottom: 0; }
+.cambiar-modo a { color: #4c3f99; font-weight: bold; }
+
+/* --- Formulario de ventas --- */
+.fila-campos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 640px) { .fila-campos { grid-template-columns: 1fr; } }
+.resumen-filtro { margin: 0; padding: 10px 12px; background: #f2f3f8; border-radius: 8px; font-size: 14px; }
